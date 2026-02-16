@@ -409,7 +409,7 @@ export default function FulizaBoostPage() {
             <h1 className="text-3xl font-bold text-[#0cc45f] mb-1">Fuliza Limit Boost</h1>{/*
             <div className="h-1 bg-[#0cc45f] w-16 mx-auto mb-6 rounded-full"></div>*/}
 
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Review Request</h2>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Review Request</h3>
             <p className="text-gray-600 mb-8">
               Confirm your selection before we initiate the STK push.
             </p>
