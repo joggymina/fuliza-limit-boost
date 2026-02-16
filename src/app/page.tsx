@@ -150,7 +150,7 @@ export default function FulizaBoostPage() {
           <main className="mx-auto flex w-full max-w-sm flex-col gap-3 px-4 pb-10 pt-4">
             {/* Header */}
             <header className="flex flex-col items-center gap-1">
-              <div className="text-xl font-semibold tracking-tight text-[#0cc45f]">FulizaBoost</div>
+              <div className="text-xl font-semibold tracking-tight text-[#0cc45f]">Fuliza Limit Boost</div>
               <div className="text-center text-[11px] text-slate-500">
                 Instant Limit Increase - No Paperwork - Same Day Access
               </div>
@@ -406,7 +406,7 @@ export default function FulizaBoostPage() {
       {isReviewOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-[#e6fff2] to-[#f0fff5] px-4">
           <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl ring-1 ring-slate-200">
-            <h1 className="text-3xl font-bold text-[#0cc45f] mb-1">FulizaBoost</h1>
+            <h1 className="text-3xl font-bold text-[#0cc45f] mb-1">Fuliza Limit Boost</h1>
             <div className="h-1 bg-[#0cc45f] w-16 mx-auto mb-6 rounded-full"></div>
 
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Review Request</h2>
