@@ -23,8 +23,8 @@ export default function FulizaBoostPage() {
       { amount: 2700, fee: 59 },
       { amount: 5000, fee: 81 },
       { amount: 10000, fee: 198 },
-      { amount: 16500, fee: 370 },
-      { amount: 21000, fee: 460 },
+      { amount: 16500, fee: 290 },
+      { amount: 21000, fee: 420 },
       { amount: 32000, fee: 590 },
       { amount: 44000, fee: 789 },
       { amount: 53000, fee: 990 },
@@ -463,8 +463,8 @@ export default function FulizaBoostPage() {
               <div className="flex justify-between items-center">
                 <span className="text-gray-700 font-medium">PAYMENT PHONE</span>
                 <div className="text-right">
-                  <div className="text-[#0cc45f] font-medium">+254 {phoneNumber.replace(/\D/g, '').slice(-9)}</div>
-                  <div className="text-xs text-gray-500">• +254{phoneNumber.replace(/\D/g, '').slice(-9)}</div>
+                  <div className="text-[#0cc45f] font-medium">+254 {phoneNumber.replace(/\D/g, '').slice(-9)}</div>{/*
+                  <div className="text-xs text-gray-500">• +254{phoneNumber.replace(/\D/g, '').slice(-9)}</div>*/}
                 </div>
               </div>
             </div>
